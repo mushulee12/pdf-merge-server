@@ -6,8 +6,11 @@ app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-@app.route('/merge', methods=['POST'])
+@app.route("/merge", methods=["GET", "POST"])
 def merge_pdf():
+    if request.method == "GET":
+        return "Merge server is alive 🟢"  # UptimeRobot이 이 응답만 보고 깨어있게 유지함
+
     merger = PdfMerger()
     files = request.files.getlist("pdfs")
 
@@ -21,5 +24,6 @@ def merge_pdf():
     merger.close()
 
     return send_file(output_path, as_attachment=True)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
